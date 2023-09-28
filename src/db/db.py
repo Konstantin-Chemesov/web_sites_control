@@ -1,5 +1,3 @@
-import os
-
 from sqlmodel import SQLModel
 from core import config
 
@@ -7,11 +5,11 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from utils.logger import log
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
 
 engine = create_async_engine(
-    f"postgresql+asyncpg://postgres:postgres@0.0.0.0:5434/postgres", echo=True,
-    query_cache_size=0,)
+    f'''postgresql+asyncpg://{config.DB_USERNAME}:{config.DB_PASSWORD}
+        @{config.PROJECT_HOST}:{config.DB_PORT}/{config.DB_NAME}''',
+        echo=True, query_cache_size=0,)
 
 async def init_db():
     try:
