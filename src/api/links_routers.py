@@ -47,8 +47,8 @@ async def get_visited_links(time_from: str = None,
 
     query = select(Links).execution_options(populate_existing=True)
     if time_from and time_to:
-        time_from = int(time_from)
-        time_to = int(time_to)
+        time_from = float(time_from)
+        time_to = float(time_to)
         query = query.where(Links.created_at.between(time_from, time_to))
     query_result = await session.execute(query)
     visited_links = query_result.scalars().fetchall()

@@ -1,14 +1,14 @@
 services:
   postgres:
     image: postgres:13.3
-    container_name: server_dbase
+    container_name: db_links
     environment:
-      POSTGRES_DB: "%env(DB_NAME)%"
-      POSTGRES_USER: "%env(DB_USERNAME)%"
-      POSTGRES_PASSWORD: "%env(DB_PASSWORD)%"
+      POSTGRES_DB: "${DB_NAME}"
+      POSTGRES_USER: "${DB_USERNAME}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
       PGDATA: "/var/lib/postgresql/data/server_dbase"
     volumes:
       - .:/docker-entrypoint-initdb.d
       - .:/var/lib/postgresql/data
     ports:  
-      - "5434:5432"
+      - "${DB_PORT}:5432"
