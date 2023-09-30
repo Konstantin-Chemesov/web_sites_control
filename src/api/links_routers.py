@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import InterfaceError
@@ -17,10 +17,12 @@ linksroute_post = APIRouter()
 linksroute_get = APIRouter()
 
 @linksroute_post.post('/visited_links')
-async def add_links(links_list: LinksParam, 
+async def add_links(links_list: LinksParam,
+                    request: Request,
                     session: AsyncSession = Depends(get_session)) -> StatusResponse:
     """ Запись в базу информации о посещенных пользователем сайтах """
     
+    log.info(f'Request: {str(request.scope)}')
     try:
         links_errors = []
         created_at = time.time()
@@ -35,16 +37,19 @@ async def add_links(links_list: LinksParam,
         response = StatusResponse(links_errors).status
     except (RequestException, InterfaceError, ConnectionRefusedError) as ex:
         response = StatusResponse(ex).status
-    log.info(str(response))
+    log.info(f'Response: {response}')
 
     return response
 
 @linksroute_get.get("/visited_links", response_model=dict)
-async def get_visited_links(time_from: str = None,
+async def get_visited_links(
+                    request: Request,
+                    time_from: str = None,
                     time_to: str = None,
                     session: AsyncSession = Depends(get_session)) -> dict:
     """ Получение списка уникальных доменов, которые посещал пользователь """
 
+    log.info(f'Request: {str(request.scope)}')
     query = select(Links).execution_options(populate_existing=True)
     if time_from and time_to:
         time_from = float(time_from)
@@ -53,5 +58,6 @@ async def get_visited_links(time_from: str = None,
     query_result = await session.execute(query)
     visited_links = query_result.scalars().fetchall()
     response = LinksResponse(visited_links).response
+    log.info(f'Response: {response}')
 
     return response

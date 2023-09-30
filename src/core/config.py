@@ -1,13 +1,11 @@
 import os
+from dotenv import dotenv_values
 
-# Название проекта. Используется в Swagger-документации
-PROJECT_NAME = os.getenv('PROJECT_NAME', 'links_check')
-PROJECT_HOST = os.getenv('PROJECT_HOST', '0.0.0.0')
-PROJECT_PORT = int(os.getenv('PROJECT_PORT', '8000'))
-DB_PORT = int(os.getenv('DB_PORT', '5432'))
-DB_NAME = os.getenv('DB_NAME', 'base')
-DB_USERNAME = os.getenv('DB_USERNAME', 'username')
-DB_PASSWORD = os.getenv('DB_PASSWORD', 'password')
-
-# Корень проекта
+dotenv_params = dotenv_values(".env")
+PROJECT_HOST = dotenv_params.get('PROJECT_HOST', '')
+PROJECT_PORT = int(dotenv_params.get('PROJECT_PORT', ''))
+DB_PORT = int(dotenv_params.get('DB_PORT', ''))
+DB_NAME = dotenv_params.get('DB_NAME', '')
+DB_USERNAME = dotenv_params.get('DB_USERNAME', '')
+DB_PASSWORD = dotenv_params.get('DB_PASSWORD', '')
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
