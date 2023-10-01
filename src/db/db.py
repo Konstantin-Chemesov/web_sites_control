@@ -4,15 +4,16 @@ import os
 
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import NullPool
 from utils.logger import log
 
 db_name = config.DB_NAME
 is_testing = int(os.getenv('TEST', 0))
 if is_testing:
-    db_name = 'db_test'
+    db_name = config.DB_TEST_NAME
 engine = create_async_engine(
     f'''postgresql+asyncpg://{config.DB_USERNAME}:{config.DB_PASSWORD}@{config.PROJECT_HOST}:{config.DB_PORT}/{db_name}''',
-        echo=True, query_cache_size=0,)
+        echo=True, query_cache_size=0, poolclass=NullPool)
 
 async def init_db():
     try:
